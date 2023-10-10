@@ -1,67 +1,174 @@
 package main.java;
 
-import java.util.Stack;
-
 public class ExpressionTree {
 
-    private static boolean isOperator(char element){
+    private static StackNode top;
 
-        if(element == '+' || element == '-' || element == '*' || element == '/' || element == '?'){
-            return true;
+    public ExpressionTree(){ top = null; }
+
+    public void clear(){ top = null; }      //borrar arbol
+
+    public void push(TreeNode pointer){
+
+        if(top == null){ top = new StackNode(pointer); }
+
+        else{
+
+            StackNode nextPointer = new StackNode(pointer);
+            nextPointer.next = top;
+            top = nextPointer;
+
         }
-        else{ return false; }
-
     }
 
-    public static Node mathTree(String postfix){
+    public TreeNode pop(){
 
-        Stack<Node> stack = new Stack<Node>();
-        Node op1;
-        Node op2;
-        Node operator;
+        if(top == null){ throw new RuntimeException(); }
 
-        for(int i = 0; i < postfix.length(); i++){
+        else{
 
-            if(!isOperator(postfix.charAt(i))){
+            TreeNode pointer = top.treeNode;
+            top = top.next;
+            return pointer;
 
-                operator = new Node(postfix.charAt(i));
-                stack.push(operator);
+        }
+    }
+
+    public TreeNode peek(){ return top.treeNode; }
+
+    public void insert(char val){
+
+        try{
+
+            if(isDigit(val)){
+
+                TreeNode nextpointer = new TreeNode(val);
+                push(nextpointer);
 
             }
-            else{
+            else if(isOperator(val)){
 
-                operator = new Node(postfix.charAt(i));
-                op1 = stack.pop();
-                op2 = stack.pop();
-                operator.left = op2;
-                operator.right = op1;
-                stack.push(operator);
+                TreeNode nextpointer = new TreeNode(val);
+                nextpointer.left = pop();
+                nextpointer.right = pop();
+                push(nextpointer);
 
             }
+
+        } catch(Exception e){ System.out.println("Invalid Expression"); }
+
+    }
+
+    public boolean isDigit(char ch){ return ch >= '0' && ch <= '9'; }
+
+    public boolean isOperator(char ch){
+
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%';
+
+    }
+
+    public int toDigit(char ch) { return ch - '0'; }
+
+    public void buildTree(String expression){
+
+        for(int i = expression.length() - 1; i >= 0; i--){ insert(expression.charAt(i)); }
+
+    }
+
+    public double evaluate(){ return evaluate(peek()); }
+
+    public double evaluate(TreeNode pointer){
+
+        if(pointer.left == null && pointer.right == null){ return toDigit(pointer.data); }
+
+        else{
+
+            double result = 0.0;
+            double left = evaluate(pointer.left);
+            double right = evaluate(pointer.right);
+            char operator = pointer.data;
+
+            switch(operator)
+            {
+            case '+': result = left + right; break;
+            case '-': result = left - right; break;
+            case '*': result = left * right; break;
+            case '/': result = left / right; break;
+            case '%': result = left % right; break;
+            case '^': result = Math.pow(left, right); break;
+            default: result = left + right; break;
+
+            }
+
+            return result;
+
         }
-
-        operator = stack.pop();
-        return operator;
-
     }
 
-    public static void inorder(Node root){
+    public void postfix(){ postOrder(peek()); };
 
-        if(root == null) return;
+    public void postOrder(TreeNode pointer) {
 
-        inorder(root.left);
-        System.out.print(root.element);
-        inorder(root.right);
+        if (pointer != null) {
 
+            postOrder(pointer.left);
+            postOrder(pointer.right);
+            System.out.print(pointer.data);
+
+        }
     }
+
+    public void infix(){ inOrder(peek()); }
+
+    public void inOrder(TreeNode pointer){
+
+        if(pointer != null){
+
+            inOrder(pointer.left);
+            System.out.print(pointer.data);
+            inOrder(pointer.right);
+
+        }
+    }
+
+    public void prefix(){ preOrder(peek()); }
+
+    public void preOrder(TreeNode pointer){
+
+        if(pointer != null) {
+
+            System.out.print(pointer.data);
+            preOrder(pointer.left);
+            preOrder(pointer.right);
+
+        }
+    }
+
+
 
     public static void main(String[] args){
 
-        String postfix = "135+*7/";
+        ExpressionTree tree = new ExpressionTree();
+        tree.buildTree("+/*1357");
 
-        Node r = mathTree(postfix);
-        inorder(r);
+        tree.infix();
+
+        System.out.println("\n" + tree.evaluate());
 
     }
 
+
+
 }
+
+
+
+//      +/*1357    =   1*3/5+7    =   13*5/7+
+
+/*
+
+        Proceso: escribe infix -> pasa a postfix -> evaluar arbol
+
+        IMPLEMENTAR USO DE NUMEROS NO DIGITOS
+
+ */
