@@ -12,29 +12,18 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Camera {
+public class Camera implements ActionListener {
 
-    private JLabel cameraOutput;
-    private JButton takeImage;
-    private VideoCapture videoCapture;
+    private final JLabel cameraOutput;
     private Mat image;
 
-    public Camera(){
+    public Camera() {
 
         cameraOutput = new JLabel();
-        takeImage = new JButton("Tomar Foto");
+
+        JButton takeImage = new JButton("Tomar Foto");
         takeImage.setPreferredSize(new Dimension(120, 30));
-
-        takeImage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String fileName = new String();
-                fileName = new SimpleDateFormat("dd-hh-mm-ss").format(new Date());
-                Imgcodecs.imwrite("images/" + fileName + ".jpg", image);
-
-            }
-        });
+        takeImage.addActionListener(this);
 
         JPanel cameraPanel = new JPanel();
         cameraPanel.setLayout(new GridBagLayout());
@@ -55,21 +44,21 @@ public class Camera {
         cameraFrame.setTitle("Camara");
         cameraFrame.add(cameraPanel);
         cameraFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        cameraFrame.setSize(new Dimension(800, 800));
+        cameraFrame.setPreferredSize(new Dimension(800, 800));
+        cameraFrame.setResizable(false);
         cameraFrame.pack();
         cameraFrame.setVisible(true);
 
     }
 
-    public void camON(){
+    public void camON() {
 
-        videoCapture = new VideoCapture(0);
+        VideoCapture videoCapture = new VideoCapture(0);
         image = new Mat();
         byte[] imageData;
-
         ImageIcon icon;
 
-        while(true){
+        while (true) {
 
             videoCapture.read(image);
             MatOfByte buffer = new MatOfByte();
@@ -81,7 +70,7 @@ public class Camera {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         EventQueue.invokeLater(new Runnable() {
@@ -92,12 +81,23 @@ public class Camera {
                 Camera camera = new Camera();
 
                 new Thread(new Runnable() {
+
                     @Override
                     public void run() {
                         camera.camON();
                     }
+
                 }).start();
+
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        String fileName = new SimpleDateFormat("dd-hh-mm-ss").format(new Date());
+        Imgcodecs.imwrite("images/" + fileName + ".jpg", image);
+
     }
 }

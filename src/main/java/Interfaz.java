@@ -8,33 +8,44 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+
 public class Interfaz implements ActionListener {
 
     public JTextField fieldEcuacion;
     public JLabel labelRespuesta;
     public JComboBox<String> listaHistorial;
-    private JButton botonCalcular;
-    private JButton botonImagen;
+    private final JButton botonMath;
+    private final JButton botonLogic;
+    private final JButton botonImagen;
+    private final JButton botonRegistro;
 
     public Interfaz() {
 
         fieldEcuacion = new JTextField("");
         fieldEcuacion.setPreferredSize(new Dimension(150, 25));
 
-        labelRespuesta = new JLabel("");
+        labelRespuesta = new JLabel("R: ");
         labelRespuesta.setPreferredSize(new Dimension(150, 25));
 
         listaHistorial = new JComboBox<String>();
         listaHistorial.setPreferredSize(new Dimension(300, 25));
         listaHistorial.addItem("Evaluaciones Pasadas");
 
-        botonCalcular = new JButton("Calcular");
-        botonCalcular.setPreferredSize(new Dimension(150, 25));
-        botonCalcular.addActionListener(this);
+        botonMath = new JButton("Algebra");
+        botonMath.setPreferredSize(new Dimension(150, 25));
+        botonMath.addActionListener(this);
+
+        botonLogic = new JButton("Logica");
+        botonLogic.setPreferredSize(new Dimension(150, 25));
+        botonLogic.addActionListener(this);
 
         botonImagen = new JButton("Usar Imagen");
         botonImagen.setPreferredSize(new Dimension(150, 25));
         botonImagen.addActionListener(this);
+
+        botonRegistro = new JButton("Obtener Registro");
+        botonRegistro.setPreferredSize(new Dimension(150, 25));
+        botonRegistro.addActionListener(this);
 
         JLabel blank = new JLabel("");
         blank.setPreferredSize(new Dimension(150, 25));
@@ -56,11 +67,19 @@ public class Interfaz implements ActionListener {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panel.add(botonCalcular, gbc);
+        panel.add(botonMath, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
+        panel.add(botonLogic, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         panel.add(botonImagen, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panel.add(botonRegistro, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -84,9 +103,29 @@ public class Interfaz implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource() == botonCalcular){
+        if(e.getSource() == botonMath){
 
-            //llamar arbol
+            String infixExpression = fieldEcuacion.getText();
+            String postfixExpression = InfixToPostfix.toPostfix(infixExpression);
+
+            String[] tokens = postfixExpression.split(" ");
+            ExpressionTree tree = new ExpressionTree();
+            TreeNode root = tree.constructExpressionTree(tokens);
+
+            labelRespuesta.setText("R: " + tree.evaluateMath(root));
+
+        }
+
+        if(e.getSource() == botonLogic){
+
+            String infixExpression = fieldEcuacion.getText();
+            String postfixExpression = InfixToPostfix.toPostfix(infixExpression);
+
+            String[] tokens = postfixExpression.split(" ");
+            ExpressionTree tree = new ExpressionTree();
+            TreeNode root = tree.constructExpressionTree(tokens);
+
+            labelRespuesta.setText("R: " + tree.evaluateLogic(root));
 
         }
 
@@ -96,22 +135,41 @@ public class Interfaz implements ActionListener {
             chosenFile.showOpenDialog(null);
             String filepath = chosenFile.getSelectedFile().getAbsolutePath();
 
-            System.out.println(filepath);
-
             Tesseract tesseract = new Tesseract();
 
             try{
 
                 String projectPath = System.getProperty("user.dir");
                 tesseract.setDatapath(projectPath + "\\Tess4j\\tessdata");
-                String text = tesseract.doOCR(new File(filepath));
-                fieldEcuacion.setText(text);
+                String extractedText = tesseract.doOCR(new File(filepath));
+                fieldEcuacion.setText(extractedText);
 
             }
+
             catch(TesseractException te){ te.printStackTrace(); }
 
         }
 
-    }
+        if(e.getSource() == botonRegistro){
 
+            System.out.println("agregar esto");
+
+        }
+    }
 }
+
+
+
+/*
+
+        IMPLEMENTAR CONECCION CLIENTE-SERVIDOR
+
+        SIMPLIFICAR CLASE InfixToPostfix
+
+        IMPLEMENTAR ESTADO DE ERROR ENTRE CLASES
+
+        IMPLEMENTAR REGISTRO CON ARCHVIOS .csv
+
+        HACER JAVADOC Y UML
+
+ */

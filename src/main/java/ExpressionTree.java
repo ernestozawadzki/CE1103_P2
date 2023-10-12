@@ -1,174 +1,87 @@
 package main.java;
 
+import java.util.Stack;
+
 public class ExpressionTree {
 
-    private static StackNode top;
+    public TreeNode constructExpressionTree(String[] postfix) {
 
-    public ExpressionTree(){ top = null; }
+        Stack<TreeNode> stack = new Stack<>();
 
-    public void clear(){ top = null; }      //borrar arbol
+        for (String token : postfix) {
 
-    public void push(TreeNode pointer){
+            if (isOperator(token)) {
 
-        if(top == null){ top = new StackNode(pointer); }
+                TreeNode rightOperand = stack.pop();
+                TreeNode leftOperand = stack.pop();
+                TreeNode operatorNode = new TreeNode(token);
+                operatorNode.left = leftOperand;
+                operatorNode.right = rightOperand;
+                stack.push(operatorNode);
 
-        else{
+            } else { stack.push(new TreeNode(token)); }
 
-            StackNode nextPointer = new StackNode(pointer);
-            nextPointer.next = top;
-            top = nextPointer;
+        }
+
+        return stack.pop();
+
+    }
+
+    public double evaluateMath(TreeNode root) {
+
+        if (root == null) { return 0; }
+        if (!isOperator(root.value)) { return Double.valueOf(root.value); }
+
+        double left = evaluateMath(root.left);
+        double right = evaluateMath(root.right);
+
+        switch (root.value) {
+
+            case "+": return left + right;
+            case "-": return left - right;
+            case "*": return left * right;
+            case "/":
+
+                if(right == 0){ throw new ArithmeticException("Arithmetic Error"); }
+                return left / right;
+
+            case "%":
+
+                if(right == 0){ throw new ArithmeticException("Arithmetic Error"); }
+                return left % right;
+
+            case "^": return Math.pow(left, right);
+
+            default: throw new IllegalArgumentException("Invalid operator: " + root.value);
 
         }
     }
 
-    public TreeNode pop(){
+    public boolean evaluateLogic(TreeNode root) {
 
-        if(top == null){ throw new RuntimeException(); }
+        if (root == null) { return false; }
+        if (!isOperator(root.value)) { return Boolean.parseBoolean(root.value); }
 
-        else{
+        boolean left = evaluateLogic(root.left);
+        boolean right = evaluateLogic(root.right);
 
-            TreeNode pointer = top.treeNode;
-            top = top.next;
-            return pointer;
+        switch (root.value) {
 
-        }
-    }
+            case "&": return left && right;
+            case "|": return left || right;
+            case "^": return left ^ right;
+            case "~": return !(left && right);
 
-    public TreeNode peek(){ return top.treeNode; }
-
-    public void insert(char val){
-
-        try{
-
-            if(isDigit(val)){
-
-                TreeNode nextpointer = new TreeNode(val);
-                push(nextpointer);
-
-            }
-            else if(isOperator(val)){
-
-                TreeNode nextpointer = new TreeNode(val);
-                nextpointer.left = pop();
-                nextpointer.right = pop();
-                push(nextpointer);
-
-            }
-
-        } catch(Exception e){ System.out.println("Invalid Expression"); }
-
-    }
-
-    public boolean isDigit(char ch){ return ch >= '0' && ch <= '9'; }
-
-    public boolean isOperator(char ch){
-
-        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%';
-
-    }
-
-    public int toDigit(char ch) { return ch - '0'; }
-
-    public void buildTree(String expression){
-
-        for(int i = expression.length() - 1; i >= 0; i--){ insert(expression.charAt(i)); }
-
-    }
-
-    public double evaluate(){ return evaluate(peek()); }
-
-    public double evaluate(TreeNode pointer){
-
-        if(pointer.left == null && pointer.right == null){ return toDigit(pointer.data); }
-
-        else{
-
-            double result = 0.0;
-            double left = evaluate(pointer.left);
-            double right = evaluate(pointer.right);
-            char operator = pointer.data;
-
-            switch(operator)
-            {
-            case '+': result = left + right; break;
-            case '-': result = left - right; break;
-            case '*': result = left * right; break;
-            case '/': result = left / right; break;
-            case '%': result = left % right; break;
-            case '^': result = Math.pow(left, right); break;
-            default: result = left + right; break;
-
-            }
-
-            return result;
+            default: throw new IllegalArgumentException("Invalid operator: " + root.value);
 
         }
     }
 
-    public void postfix(){ postOrder(peek()); };
+    public boolean isOperator(String token) {
 
-    public void postOrder(TreeNode pointer) {
-
-        if (pointer != null) {
-
-            postOrder(pointer.left);
-            postOrder(pointer.right);
-            System.out.print(pointer.data);
-
-        }
-    }
-
-    public void infix(){ inOrder(peek()); }
-
-    public void inOrder(TreeNode pointer){
-
-        if(pointer != null){
-
-            inOrder(pointer.left);
-            System.out.print(pointer.data);
-            inOrder(pointer.right);
-
-        }
-    }
-
-    public void prefix(){ preOrder(peek()); }
-
-    public void preOrder(TreeNode pointer){
-
-        if(pointer != null) {
-
-            System.out.print(pointer.data);
-            preOrder(pointer.left);
-            preOrder(pointer.right);
-
-        }
-    }
-
-
-
-    public static void main(String[] args){
-
-        ExpressionTree tree = new ExpressionTree();
-        tree.buildTree("+/*1357");
-
-        tree.infix();
-
-        System.out.println("\n" + tree.evaluate());
+        return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")
+                || token.equals("%") || token.equals("&") || token.equals("|") || token.equals("~")
+                || token.equals("^");
 
     }
-
-
-
 }
-
-
-
-//      +/*1357    =   1*3/5+7    =   13*5/7+
-
-/*
-
-        Proceso: escribe infix -> pasa a postfix -> evaluar arbol
-
-        IMPLEMENTAR USO DE NUMEROS NO DIGITOS
-
- */

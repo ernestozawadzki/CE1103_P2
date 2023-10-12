@@ -2,16 +2,15 @@ package main.java;
 
 public class TreeNode {
 
-    char data;
+    String value;
     TreeNode left;
     TreeNode right;
 
-    public TreeNode(char data){
+    public TreeNode(String value) {
 
-        this.data = data;
+        this.value = value;
         this.left = null;
         this.right = null;
 
     }
-
 }
