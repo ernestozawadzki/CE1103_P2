@@ -9,16 +9,43 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 
+/**
+ *
+ */
 public class Interfaz implements ActionListener {
 
+    /**
+     * Campo de texto para escribir expresiones
+     */
     public JTextField fieldEcuacion;
+    /**
+     * Campo de texto donde se reciben respuestas
+     */
     public JLabel labelRespuesta;
+    /**
+     * Tabla donde se recibe el registro
+     */
     public JComboBox<String> listaHistorial;
+    /**
+     * Boton para evaluaciones algebraicas
+     */
     private final JButton botonMath;
+    /**
+     * Boton para evaluaciones logicas
+     */
     private final JButton botonLogic;
+    /**
+     * Boton para usar una imagen
+     */
     private final JButton botonImagen;
+    /**
+     * Boton para pedir el registro
+     */
     private final JButton botonRegistro;
 
+    /**
+     * Constructor de la clase
+     */
     public Interfaz() {
 
         fieldEcuacion = new JTextField("");
@@ -98,8 +125,16 @@ public class Interfaz implements ActionListener {
 
     }
 
+    /**
+     * Metodo principal de la clase
+     */
     public static void main(String[] args) { new Interfaz(); }
 
+    /**
+     * Metodo que activa la accion de los botones
+     * @Override
+     * @param e evento a ser procesado
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -166,7 +201,7 @@ public class Interfaz implements ActionListener {
 
         SIMPLIFICAR CLASE InfixToPostfix
 
-        IMPLEMENTAR ESTADO DE ERROR ENTRE CLASES
+        IMPLEMENTAR ESTADO DE ERROR ENTRE CLASES (?)
 
         IMPLEMENTAR REGISTRO CON ARCHVIOS .csv
 

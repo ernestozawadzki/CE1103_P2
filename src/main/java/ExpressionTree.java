@@ -2,8 +2,18 @@ package main.java;
 
 import java.util.Stack;
 
+
+/**
+ * Clase que crea y evalua el arbol de expresion
+ * @author Ernesto Zawadzki Hernandez
+ */
 public class ExpressionTree {
 
+    /**
+     * Metodo que construye el arbol de expresion
+     * @param postfix expresion dada en la notacion posfija
+     * @return arbol construido
+     */
     public TreeNode constructExpressionTree(String[] postfix) {
 
         Stack<TreeNode> stack = new Stack<>();
@@ -27,6 +37,11 @@ public class ExpressionTree {
 
     }
 
+    /**
+     * Metodo que evalua expresiones algebraicas
+     * @param root raiz del arbol
+     * @return operacion algebracia
+     */
     public double evaluateMath(TreeNode root) {
 
         if (root == null) { return 0; }
@@ -57,6 +72,11 @@ public class ExpressionTree {
         }
     }
 
+    /**
+     * Metodo que evalua expresiones logicas
+     * @param root raiz del arbol
+     * @return operacion logica
+     */
     public boolean evaluateLogic(TreeNode root) {
 
         if (root == null) { return false; }
@@ -77,6 +97,11 @@ public class ExpressionTree {
         }
     }
 
+    /**
+     * Metodo que indica si un nodo es o no es operador
+     * @param token texto del nodo
+     * @return true o false
+     */
     public boolean isOperator(String token) {
 
         return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")

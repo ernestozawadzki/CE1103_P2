@@ -12,11 +12,25 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/**
+ * Clase que crea y maneja la funcionalidad de la camara
+ * @author Ernesto Zawadzki Hernandez
+ */
 public class Camera implements ActionListener {
 
+    /**
+     * Propiedad que representa la senal de video de la camara
+     */
     private final JLabel cameraOutput;
+    /**
+     * Propiedad que representa la imagen creada
+     */
     private Mat image;
 
+    /**
+     * Constructor de la camara
+     */
     public Camera() {
 
         cameraOutput = new JLabel();
@@ -51,6 +65,9 @@ public class Camera implements ActionListener {
 
     }
 
+    /**
+     * Metodo que activa la camara
+     */
     public void camON() {
 
         VideoCapture videoCapture = new VideoCapture(0);
@@ -70,11 +87,18 @@ public class Camera implements ActionListener {
         }
     }
 
+    /**
+     * Metodo que activa la libreria OpenCV
+     */
     public static void main(String[] args) {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         EventQueue.invokeLater(new Runnable() {
 
+            /**
+             * Metodo que construye la camara
+             * @Override
+             */
             @Override
             public void run() {
 
@@ -82,6 +106,10 @@ public class Camera implements ActionListener {
 
                 new Thread(new Runnable() {
 
+                    /**
+                     * Metodo que activa la camara
+                     * @Override
+                     */
                     @Override
                     public void run() {
                         camera.camON();
@@ -93,6 +121,10 @@ public class Camera implements ActionListener {
         });
     }
 
+    /**
+     * Metodo que toma una foto y la agrega al folder de imagenes del proyecto
+     * @param e evento a ser procesado
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 
