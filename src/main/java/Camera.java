@@ -68,14 +68,14 @@ public class Camera implements ActionListener {
     /**
      * Metodo que activa la camara
      */
-    public void camON() {
+    public void camOn() {
 
         VideoCapture videoCapture = new VideoCapture(0);
         image = new Mat();
         byte[] imageData;
         ImageIcon icon;
 
-        while (true) {
+        while(true) {
 
             videoCapture.read(image);
             MatOfByte buffer = new MatOfByte();
@@ -95,10 +95,6 @@ public class Camera implements ActionListener {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         EventQueue.invokeLater(new Runnable() {
 
-            /**
-             * Metodo que construye la camara
-             * @Override
-             */
             @Override
             public void run() {
 
@@ -106,13 +102,9 @@ public class Camera implements ActionListener {
 
                 new Thread(new Runnable() {
 
-                    /**
-                     * Metodo que activa la camara
-                     * @Override
-                     */
                     @Override
                     public void run() {
-                        camera.camON();
+                        camera.camOn();
                     }
 
                 }).start();
@@ -128,7 +120,7 @@ public class Camera implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        String fileName = new SimpleDateFormat("dd-hh-mm-ss").format(new Date());
+        String fileName = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(new Date());
         Imgcodecs.imwrite("images/" + fileName + ".jpg", image);
 
     }

@@ -18,9 +18,9 @@ public class ExpressionTree {
 
         Stack<TreeNode> stack = new Stack<>();
 
-        for (String token : postfix) {
+        for(String token : postfix) {
 
-            if (isOperator(token)) {
+            if(isOperator(token)) {
 
                 TreeNode rightOperand = stack.pop();
                 TreeNode leftOperand = stack.pop();
@@ -40,21 +40,22 @@ public class ExpressionTree {
     /**
      * Metodo que evalua expresiones algebraicas
      * @param root raiz del arbol
-     * @return operacion algebracia
+     * @return operacion algebraica
      */
     public double evaluateMath(TreeNode root) {
 
-        if (root == null) { return 0; }
-        if (!isOperator(root.value)) { return Double.valueOf(root.value); }
+        if(root == null) { return 0; }
+        if(!isOperator(root.value)) { return Double.valueOf(root.value); }
 
         double left = evaluateMath(root.left);
         double right = evaluateMath(root.right);
 
-        switch (root.value) {
+        switch(root.value) {
 
             case "+": return left + right;
             case "-": return left - right;
             case "*": return left * right;
+            case "^": return Math.pow(left, right);
             case "/":
 
                 if(right == 0){ throw new ArithmeticException("Arithmetic Error"); }
@@ -64,8 +65,6 @@ public class ExpressionTree {
 
                 if(right == 0){ throw new ArithmeticException("Arithmetic Error"); }
                 return left % right;
-
-            case "^": return Math.pow(left, right);
 
             default: throw new IllegalArgumentException("Invalid operator: " + root.value);
 
@@ -79,13 +78,13 @@ public class ExpressionTree {
      */
     public boolean evaluateLogic(TreeNode root) {
 
-        if (root == null) { return false; }
-        if (!isOperator(root.value)) { return Boolean.parseBoolean(root.value); }
+        if(root == null) { return false; }
+        if(!isOperator(root.value)) { return Boolean.parseBoolean(root.value); }
 
         boolean left = evaluateLogic(root.left);
         boolean right = evaluateLogic(root.right);
 
-        switch (root.value) {
+        switch(root.value) {
 
             case "&": return left && right;
             case "|": return left || right;
@@ -102,7 +101,7 @@ public class ExpressionTree {
      * @param token texto del nodo
      * @return true o false
      */
-    public boolean isOperator(String token) {
+    private boolean isOperator(String token) {
 
         return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")
                 || token.equals("%") || token.equals("&") || token.equals("|") || token.equals("~")

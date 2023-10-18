@@ -10,15 +10,15 @@ public class TreeNode {
     /**
      * Propiedad que representa el texto de un nodo
      */
-    String value;
+    public String value;
     /**
      * Propiedad que representa el hijo izquierdo
      */
-    TreeNode left;
+    public TreeNode left;
     /**
      * Propiedad que representa el hijo derecho
      */
-    TreeNode right;
+    public TreeNode right;
 
     /**
      * Constructor de la clase
